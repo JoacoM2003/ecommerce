@@ -6,6 +6,8 @@ from django.contrib.auth.decorators import login_required
 from django.shortcuts import redirect, get_object_or_404
 from django.contrib import messages
 from .forms import SignUpForm, UpdateUserForm, ChangePasswordForm, UserInfoForm
+from cart.cart import Cart
+import json
 
 
 def home(request):
@@ -26,6 +28,17 @@ def signin(request):
         user = authenticate(request, username=username, password=password)
         if user is not None:
             login(request, user)
+
+            current_user = Profile.objects.get(user__id=request.user.id)
+            saved_cart = current_user.old_cart
+            if saved_cart:
+                converted_cart = json.loads(saved_cart)
+                cart = Cart(request)
+                for key, value in converted_cart.items():
+                    cart.db_add(product=key, quantity=value)
+
+
+
             messages.success(request, "You have been logged in")
             return redirect('home')
         else:
@@ -119,9 +132,8 @@ def product(request, id):
 def category(request, slug):
     try:
         category = Category.objects.get(name=slug)
-        categories = Category.objects.all()
         products = Product.objects.filter(category=category)
-        return render(request, 'category.html', {'category': category, 'categories': categories, 'products': products})
+        return render(request, 'category.html', {'category': category, 'products': products})
     except:
         messages.error(request, "La categoría no existe.")
         return redirect('home')

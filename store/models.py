@@ -12,6 +12,7 @@ class Profile(models.Model):
     state = models.CharField(max_length=200, blank=True, null=True)
     zip_code = models.CharField(max_length=10, blank=True, null=True)
     country = models.CharField(max_length=200, blank=True, null=True)
+    old_cart = models.CharField(max_length=255, blank=True, null=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
