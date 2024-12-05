@@ -1,0 +1,67 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<header class="bg-dark py-5">
+    <div class="container px-4 px-lg-5 my-5">
+        <div class="text-center text-white">
+            <h1 class="display-4 fw-bolder"> Shop
+            </h1>
+            <p class="lead fw-normal text-white-50 mb-0">Compra tus cosas aquí</p>
+        </div>
+    </div>
+</header>
+<main class="container py-5">
+    <div class="row">
+        <div class="col-md-4 offset-md-4">
+            <form action="{% url 'signup' %}", method="post" class="card card-body">
+                {% csrf_token %}
+                
+                <h1 class="text-center">SignUp</h1>
+        
+                {{error}}
+
+                <div class="mb-3">
+                    <label for="username" class="form-label">Username</label>
+                    <input type="text" name="username" class="form-control" id ="username" placeholder="Username">
+                </div>
+
+                <div class="mb-3">
+                    <label for="email" class="form-label">Email</label>
+                    <input type="email" name="email" class="form-control" id ="email" placeholder="Email">
+                </div>
+
+                <div class="mb-3">
+                    <label for="name" class="form-label">Nombre</label>
+                    <input type="text" name="name" class="form-control" id ="name" placeholder="Nombre">
+                </div>
+
+                <div class="mb-3">
+                    <label for="phone" class="form-label">Phone</label>
+                    <input type="text" name="phone" class="form-control" id ="phone" placeholder="Teléfono">
+                </div>
+
+                <div class="mb-3">
+                    <label for="address" class="form-label">Dirección</label>
+                    <input type="text" name="address" class="form-control" id ="address" placeholder="Dirección">
+                </div>
+
+                <div class="mb-3">
+                    <label for="password1" class="form-label">Password</label>
+                    <input type="password" name="password1" class="form-control" id="password1" placeholder="Password">
+                </div>
+
+                <div class="mb-3">
+                    <label for="password2" class="form-label">Confirm Password</label>
+                    <input type="password" name="password2" class="form-control" id="password2" placeholder="Confirm Password">
+                </div>
+
+                <button class="btn btn-primary">
+                    SignUp
+                </button>
+            </form>
+        </div>
+    </div>
+</main>
+
+{% endblock content %}
