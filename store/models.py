@@ -67,20 +67,20 @@ class Customer(models.Model):
     def __str__(self):
         return self.name
 
-    @staticmethod
-    def create_and_save(name, email, phone=None, address=None):
-        customer = Customer(
-            name=name,
-            email=email,
-            phone=phone,
-            address=address
-        )
-        customer.save()
-        return customer
+    # @staticmethod
+    # def create_and_save(name, email, phone=None, address=None):
+    #     customer = Customer(
+    #         name=name,
+    #         email=email,
+    #         phone=phone,
+    #         address=address
+    #     )
+    #     customer.save()
+    #     return customer
     
-    @classmethod
-    def get_by_email(cls, email):
-        return cls.objects.filter(email=email).first()
+    # @classmethod
+    # def get_by_email(cls, email):
+    #     return cls.objects.filter(email=email).first()
     
 class Category(models.Model):
     name = models.CharField(max_length=255)
