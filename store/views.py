@@ -8,6 +8,8 @@ from django.contrib import messages
 from .forms import SignUpForm, UpdateUserForm, ChangePasswordForm, UserInfoForm
 from cart.cart import Cart
 import json
+from payment.forms import ShippingForm
+from payment.models import ShippingAddress
 
 
 def home(request):
@@ -116,12 +118,15 @@ def update_info(request):
         if request.user.is_superuser:
             return redirect('home')
         current_user = Profile.objects.get(user__id=request.user.id)
-        form = UserInfoForm(request.POST or None, instance=current_user)
-        if form.is_valid():
-            form.save()
+        shipping_user = ShippingAddress.objects.get(user__id=request.user.id)
+        user_form = UserInfoForm(request.POST or None, instance=current_user)
+        shipping_form = ShippingForm(request.POST or None, instance=shipping_user)
+        if user_form.is_valid() and shipping_form.is_valid():
+            user_form.save()
+            shipping_form.save()
             messages.success(request, "Información actualizada exitosamente.")
             return redirect('home')
-        return render(request, 'update_info.html', {'form': form})
+        return render(request, 'update_info.html', {'user_form': user_form, 'shipping_form': shipping_form})
 
     
 

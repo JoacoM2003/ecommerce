@@ -5,8 +5,8 @@ from .models import Profile
 
 class UserInfoForm(forms.ModelForm):
     phone = forms.CharField(label='Phone', widget=forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Phone'}), required=False)
-    address1 = forms.CharField(label='Address', widget=forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Address'}), required=False)
-    address2 = forms.CharField(label='Address', widget=forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Address'}), required=False)
+    address = forms.CharField(label='Address', widget=forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Address'}), required=False)
+    depto = forms.CharField(label='Depto', widget=forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Depto'}), required=False)
     city = forms.CharField(label='City', widget=forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'City'}), required=False)
     state = forms.CharField(label='State', widget=forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'State'}), required=False)
     zip_code = forms.CharField(label='Zip Code', widget=forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Zip Code'}), required=False)
@@ -14,7 +14,7 @@ class UserInfoForm(forms.ModelForm):
 
     class Meta:
         model = Profile
-        fields = ['phone', 'address1', 'address2', 'city', 'state', 'zip_code', 'country']
+        fields = ['phone', 'address', 'depto', 'city', 'state', 'zip_code', 'country']
 
 
 
