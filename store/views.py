@@ -60,7 +60,6 @@ def signup(request):
     form = SignUpForm()
     if request.method == 'POST':
         form = SignUpForm(request.POST)
-        print(form.errors)
         if form.is_valid():
             form.save()
             username = form.cleaned_data['username']

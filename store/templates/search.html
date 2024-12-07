@@ -16,6 +16,7 @@
         <form action="{% url 'search' %}", method="post" class="card card-body">
             {% csrf_token %}
             <input type="text" name="searched" id="searched" placeholder="Search by name" class="form-control">
+            <br>
             <button type="submit" class="btn btn-primary">Search</button>
         </form>
         {% if searched %}
