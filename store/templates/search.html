@@ -22,6 +22,7 @@
         {% if searched %}
             <h3>Search results for: {{ searched }}</h3>
             <div class="row">
+                {% if products %}
                 <h4>Products</h4>
                 {% for product in products %}
                     <div class="col-md-4">
@@ -35,6 +36,8 @@
                         </div>
                     </div>
                 {% endfor %}
+                {% endif %}
+                {% if categories %}
                 <h4>Categories</h4>
                 {% for category in categories %}
                     <div class="col-md-4">
@@ -47,6 +50,7 @@
                         </div>
                     </div>
                 {% endfor %}
+                {% endif %}
             </div>
         {% endif %}
     </div>

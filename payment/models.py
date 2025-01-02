@@ -1,17 +1,18 @@
 from django.db import models
 from django.contrib.auth.models import User
 from store.models import Product
+from django.db.models.signals import post_save
 
 class ShippingAddress(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE, null=True, blank=True)
-    shipping_full_name = models.CharField(max_length=255)
-    shipping_email = models.EmailField(max_length=255)
-    shipping_address = models.CharField(max_length=255)
+    shipping_full_name = models.CharField(max_length=255, blank=True, null=True)
+    shipping_email = models.EmailField(max_length=255, blank=True, null=True)
+    shipping_address = models.CharField(max_length=255, blank=True, null=True)
     shipping_depto = models.CharField(max_length=255, blank=True, null=True) 
-    shipping_city = models.CharField(max_length=255)
+    shipping_city = models.CharField(max_length=255, blank=True, null=True)
     shipping_state = models.CharField(max_length=255, blank=True, null=True)
     shipping_zip_code = models.CharField(max_length=10, blank=True, null=True)
-    shipping_country = models.CharField(max_length=255)
+    shipping_country = models.CharField(max_length=255, blank=True, null=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
@@ -19,7 +20,13 @@ class ShippingAddress(models.Model):
         verbose_name_plural = "Shipping Addresses"
 
     def __str__(self):
-        return f'Shipping Address for {self.shipping_full_name}'
+        return f'Shipping Address for {self.user.first_name + " " + self.user.last_name}'
+    
+def create_shipping_address(sender, instance, created, **kwargs):
+    if created:
+        user_shipping = ShippingAddress(user=instance)
+        user_shipping.save()
+post_save.connect(create_shipping_address, sender=User)
 
 
 

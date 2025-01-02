@@ -132,7 +132,7 @@ STATICFILES_DIRS = ['static/']
 MEDIA_URL = 'media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
-LOGIN_URL = '/store/signin'
+LOGIN_URL = '/signin'
 
 
 # Default primary key field type
