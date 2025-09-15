@@ -30,7 +30,8 @@ def signin(request):
         user = authenticate(request, username=username, password=password)
         if user is not None:
             login(request, user)
-
+            if request.user.is_superuser:
+                return redirect('home')
             current_user = Profile.objects.get(user__id=request.user.id)
             saved_cart = current_user.old_cart
             if saved_cart:
@@ -38,8 +39,6 @@ def signin(request):
                 cart = Cart(request)
                 for key, value in converted_cart.items():
                     cart.db_add(product=key, quantity=value)
-
-
 
             messages.success(request, "You have been logged in")
             return redirect('home')
