@@ -1,14 +1,13 @@
-from store.models import Product
+from store.models import Product, Profile
 class Cart():
     def __init__(self, request):
-        self.request = request
         self.session = request.session
-        cart = self.session.get('cart')
-        if not cart:
-            self.session['cart'] = {}
-            self.cart = self.session['cart']
-        else:
-            self.cart = self.session['cart']
+        self.request = request
+        cart = request.session.get('session_key')
+        if 'session_key' not in request.session:
+            cart = self.session['session_key'] = {}
+        self.cart = cart
+
     
     def add(self, product, quantity):
         product_id = str(product.id)
@@ -18,6 +17,23 @@ class Cart():
         else:
             self.cart[product_id] = int(quantity)
         self.session.modified = True
+
+        if self.request.user.is_authenticated:
+            current_user = Profile.objects.filter(user__id=self.request.user.id)
+            carty = str(self.cart)
+            carty = carty.replace("'", '"')
+            current_user.update(old_cart=str(carty))
+
+    def db_add(self, product, quantity):
+        product_id = str(product)
+        quantity = str(quantity)
+        if product_id in self.cart:
+            pass
+        else:
+            self.cart[product_id] = int(quantity)
+        self.session.modified = True
+
+
 
     def __len__(self):
         return len(self.cart)

@@ -1,0 +1,91 @@
+{% extends 'base.html' %}
+{% block content %}
+
+<header class="bg-dark py-5">
+    <div class="container px-4 px-lg-5 my-5">
+        <div class="text-center text-white">
+            <h1 class="display-4 fw-bolder">Billing Info</h1>
+            <p class="lead fw-normal text-white-50 mb-0"></p>
+        </div>
+    </div>
+</header>
+
+<main class="container py-5">
+    <div class="row">
+        <div class="col-md-6 offset-md-3">
+            <div class="card card-header">
+                Processing Order
+            </div>  
+            <div class="card card-body">
+                <table class="table table-sm">
+                    <thead>
+                        <tr>
+                            <th scope="col">Product</th>
+                            <th scope="col">Quantity</th>
+                            <th scope="col">Price</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for product in cart_products %}
+                        <tr>
+                            <td>{{product.name}}</td>
+                            {% for key, value in quantities.items %}
+                            {% if key == product.id|slugify %}
+                            <td>{{ value }}</td>
+                            {% endif %}
+                            {% endfor %}
+                            {% if product.is_sale %}
+                            <td>${{product.sale_price}}</td>
+                            {% else %}
+                            <td>${{product.price}}</td>
+                            {% endif %}
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+                <div class="card card-header">                    
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div class="text-start">Total: ${{total}}</div>
+                    </div>
+                </div>
+                <br>
+                <div class="d-flex justify-content-end">
+                    <a class="btn btn-secondary me-2" href="{% url 'home' %}">Home</a>
+                    <a class="btn btn-primary" href="{% url 'cart' %}">Update Cart</a>
+                </div>
+                <br></br>
+                <div class="card card-header">
+                    Shipping Info
+                </div>
+                <div class="card card-body">
+                    <p>Full Name: {{shipping_info.shipping_full_name}}</p>
+                    <p>Address: {{shipping_info.shipping_address}}</p>
+                    <p>Depto: {{shipping_info.shipping_depto}}</p>
+                    <p>City: {{shipping_info.shipping_city}}</p>
+                    <p>State: {{shipping_info.shipping_state}}</p>
+                    <p>Zip Code: {{shipping_info.shipping_zip_code}}</p>
+                    <p>Country: {{shipping_info.shipping_country}}</p>
+                    <a class="btn btn-primary" href="{% url 'checkout' %}">Update Shipping Info</a>
+                </div>
+                <br></br>
+                <div class="card card-header">
+                    Billing Info
+                </div>
+                <div class="card card-body">
+                    <form method="POST" action="{% url 'process_order' %}">
+                        {% csrf_token %}
+
+                        {{payment_form.as_p}}
+
+                        <br>
+
+                        <button type="submit" class="btn btn-primary">Continue to Payment</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</main>
+
+
+{% endblock content %}

@@ -1,0 +1,59 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<header class="bg-dark py-5">
+    <div class="container px-4 px-lg-5 my-5">
+        <div class="text-center text-white">
+            <h1 class="display-4 fw-bolder"> Search
+            </h1>
+            <p class="lead fw-normal text-white-50 mb-0">Search for products</p>
+        </div>
+    </div>
+</header>
+<br></br>
+<div class="card-body">
+    <div class="col-md-4 offset-md-4">
+        <form action="{% url 'search' %}", method="post" class="card card-body">
+            {% csrf_token %}
+            <input type="text" name="searched" id="searched" placeholder="Search by name" class="form-control">
+            <br>
+            <button type="submit" class="btn btn-primary">Search</button>
+        </form>
+        {% if searched %}
+            <h3>Search results for: {{ searched }}</h3>
+            <div class="row">
+                {% if products %}
+                <h4>Products</h4>
+                {% for product in products %}
+                    <div class="col-md-4">
+                        <div class="card mb-4">
+                            <img src="{{ product.image.url }}" class="card-img-top" alt="{{ product.name }}">
+                            <div class="card-body">
+                                <h5 class="card-title">{{ product.name }}</h5>
+                                <p class="card-text">${{ product.price }}</p>
+                                <a href="{% url 'product' product.id %}" class="btn btn-primary">View Product</a>
+                            </div>
+                        </div>
+                    </div>
+                {% endfor %}
+                {% endif %}
+                {% if categories %}
+                <h4>Categories</h4>
+                {% for category in categories %}
+                    <div class="col-md-4">
+                        <div class="card mb-4">
+                            <img src="{{ category.image.url }}" class="card-img-top" alt="{{ category.name }}">
+                            <div class="card-body">
+                                <h5 class="card-title">{{ category.name }}</h5>
+                                <a href="{% url 'category' category.name %}" class="btn btn-primary">View Category</a>
+                            </div>
+                        </div>
+                    </div>
+                {% endfor %}
+                {% endif %}
+            </div>
+        {% endif %}
+    </div>
+</div>
+<br></br>
+{% endblock %}

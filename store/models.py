@@ -1,17 +1,18 @@
 from django.db import models
 from django.contrib.auth.models import User
-from django.db.models.signals import post_save  
+from django.db.models.signals import post_save
 import datetime
 
 class Profile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     phone = models.CharField(max_length=20, blank=True, null=True)
-    address1 = models.CharField(max_length=255, blank=True, null=True)
-    address2 = models.CharField(max_length=255, blank=True, null=True)
+    address = models.CharField(max_length=255, blank=True, null=True)
+    depto = models.CharField(max_length=255, blank=True, null=True)
     city = models.CharField(max_length=200, blank=True, null=True)
     state = models.CharField(max_length=200, blank=True, null=True)
     zip_code = models.CharField(max_length=10, blank=True, null=True)
     country = models.CharField(max_length=200, blank=True, null=True)
+    old_cart = models.CharField(max_length=255, blank=True, null=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
@@ -67,20 +68,20 @@ class Customer(models.Model):
     def __str__(self):
         return self.name
 
-    @staticmethod
-    def create_and_save(name, email, phone=None, address=None):
-        customer = Customer(
-            name=name,
-            email=email,
-            phone=phone,
-            address=address
-        )
-        customer.save()
-        return customer
+    # @staticmethod
+    # def create_and_save(name, email, phone=None, address=None):
+    #     customer = Customer(
+    #         name=name,
+    #         email=email,
+    #         phone=phone,
+    #         address=address
+    #     )
+    #     customer.save()
+    #     return customer
     
-    @classmethod
-    def get_by_email(cls, email):
-        return cls.objects.filter(email=email).first()
+    # @classmethod
+    # def get_by_email(cls, email):
+    #     return cls.objects.filter(email=email).first()
     
 class Category(models.Model):
     name = models.CharField(max_length=255)

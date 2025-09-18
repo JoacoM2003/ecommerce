@@ -43,4 +43,3 @@ def update_cart(request):
         cart.update(product=product, quantity=product_quantity)
         response = JsonResponse({"quantity": product_quantity})
         return response
-        return redirect('cart')
