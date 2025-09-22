@@ -7,7 +7,7 @@ Este proyecto es una aplicación web de comercio electrónico desarrollada con D
 - **Backend:** Python 3.11, Django
 - **Frontend:** HTML, CSS
 - **Contenerización:** Docker
-- **Base de datos:** SQLite (por defecto)
+- **Base de datos:** PostgreSQL
 
 ## 🚀 Instalación
 
