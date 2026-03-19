@@ -1,73 +1,117 @@
-# 📦 Ecommerce
+# 🛒 Modern Ecommerce Hub
 
-Este proyecto es una aplicación web de comercio electrónico desarrollada con Django y Docker, diseñada para gestionar productos, carritos de compra y pagos.
+[![Python](https://img.shields.io/badge/Python-3.11-3776AB?logo=python&logoColor=white)](https://www.python.org/)
+[![Django](https://img.shields.io/badge/Django-4.2-092E20?logo=django&logoColor=white)](https://www.djangoproject.com/)
+[![PostgreSQL](https://img.shields.io/badge/PostgreSQL-15-336791?logo=postgresql&logoColor=white)](https://www.postgresql.org/)
+[![Docker](https://img.shields.io/badge/Docker-Enabled-2496ED?logo=docker&logoColor=white)](https://www.docker.com/)
 
-## 🛠️ Tecnologías
+**Modern Ecommerce Hub** es una plataforma de comercio electrónico integral, robusta y escalable. Construida sobre Python y Django, implementa un diseño modular para gestionar un catálogo dinámico, carritos de compras basados en sesión, perfiles de usuario y gestión segura de pedidos.
 
-- **Backend:** Python 3.11, Django
-- **Frontend:** HTML, CSS
-- **Contenerización:** Docker
-- **Base de datos:** PostgreSQL
+---
 
-## 🚀 Instalación
+## 🎯 ¿Qué resuelve este proyecto?
 
-1. Clona el repositorio:
+Desarrollar una tienda en línea desde cero presenta múltiples desafíos: gestión concurrente del inventario, persistencia de las compras para usuarios invitados frente a usuarios autenticados, y gestión eficiente de la infraestructura. Este proyecto soluciona estos problemas implementando:
+- **Gestión de Catálogo Flexible:** Soporte nativo para ofertas (`is_sale`), categorización e inventario actualizado.
+- **Carrito de Compras Persistente y Rápido:** Uso de las sesiones nativas de Django (`request.session`) para almacenar de forma eficiente el carrito, combinándolo con el perfil del usuario al iniciar sesión.
+- **Escalabilidad de Medios:** Delegación de todo el contenido multimedia a Cloudinary, reduciendo drásticamente el peso sobre la base de datos y mejorando el ancho de banda.
+- **Despliegue Replicable:** El uso de Docker garantiza que "funcione en mi máquina" signifique que funciona _también_ en producción.
 
-\`\`\`bash
-git clone https://github.com/JoacoM2003/ecommerce.git
-cd ecommerce
-\`\`\`
+---
 
-2. Construye y ejecuta los contenedores con Docker:
+## 🏗️ Arquitectura y Diseño del Sistema
 
-\`\`\`bash
-docker-compose up --build
-\`\`\`
+El proyecto sigue una arquitectura **Monolítica Modular**, estructurada en módulos de aplicación Django independientes altamente cohesivos (Patrón MTV).
 
-3. Accede a la aplicación en tu navegador:
+### Integración de Aplicaciones (Apps)
+1. **`store/`**: El núcleo de datos. Define los modelos `Product`, `Category`, `Customer`, y gestiona el `Profile`. Extiende el modelo `User` genérico de Django usando señales (`post_save`) para aprovisionar automáticamente perfiles de comercio al registrar usuarios.
+2. **`cart/`**: Motor lógico transaccional de compras. Manipula un diccionario JSON en la sesión del navegador (`Cart class`). Si el usuario se loguea, realiza un *merge* guardando el estado en el campo `old_cart` del modelo `Profile`.
+3. **`payment/`**: Gestiona el flujo final o *Checkout*. Define la lógica para guardar direcciones de envío (`ShippingAddress`) e instanciar `Order` y `OrderItem` para establecer un registro financiero inmutable vinculado a los productos de la tienda.
+4. **`ecom/`**: Capa superior de configuración, enrutamiento general y gestión de entornos.
 
-\`\`\`
-http://localhost:8000
-\`\`\`
+### Manejo de Archivos Estáticos y Multimedia
+- **WhiteNoise**: La capa de middleware intercepta y sirve los archivos estáticos de forma comprimida y cacheados (`CompressedManifestStaticFilesStorage`), eliminando la necesidad de Nginx o Apache como proxy inverso para los estáticos en servidores limitados.
+- **Cloudinary Storage**: La base de datos no guarda bytes de las fotografías. Se utiliza `MediaCloudinaryStorage` de modo que la app sólo almacena el objeto relacional que apunta a un CDN global de imágenes optimizadas.
 
-## 🔧 Estructura del Proyecto
+### Integridad de Entorno
+La configuración de base de datos extrae la URL desde la variable de entorno mediante `dj_database_url`, acoplando el proyecto completamente a la metodología **12-Factor App** para transiciones perfectas entre desarrollo local (SQLite/Postgres local) y la nube (Render, AWS, etc.).
 
-- `cart/`: Lógica del carrito de compras.
-- `ecom/`: Aplicación principal del ecommerce.
-- `payment/`: Gestión de pagos.
-- `static/`: Archivos estáticos (CSS, imágenes).
-- `store/`: Catálogo de productos.
-- `Dockerfile`: Configuración del contenedor.
-- `docker-compose.yml`: Orquestación de servicios.
-- `manage.py`: Herramienta de administración de Django.
-- `requirements.txt`: Dependencias de Python.
+---
 
-## 🧪 Uso
+## 🛠️ Stack Tecnológico Completo
 
-- **Crear superusuario:**
+* **Backend Framework**: Django 4.2+ (Python 3.11)
+* **Base de Datos**: PostgreSQL 15 (Accedido vía ORM de Django)
+* **Contenedorización**: Docker y Docker Compose para orquestar la App + Base de datos en tándem de desarrollo
+* **Almacenamiento CDN**: API de Cloudinary
+* **Middleware Estático**: WhiteNoise
+* **Gestión de Secretos**: `python-dotenv`
 
-\`\`\`bash
-docker-compose exec web python manage.py createsuperuser
-\`\`\`
+---
 
-- **Acceder al panel de administración:**
+## 🚀 Instalación y Configuración Local
 
-\`\`\`
-http://localhost:8000/admin
-\`\`\`
+### Pre-requisitos
+Tener instalado el motor de **Docker** y **Docker Compose**. Contar con una cuenta de desarrollador gratuita en **Cloudinary**.
 
-- **Agregar productos y gestionar pedidos** desde el panel de administración.
+### Pasos
 
-## 🌟 Características
+1. **Clonar el Repositorio**
+   ```bash
+   git clone https://github.com/JoacoM2003/ecommerce.git
+   cd ecommerce
+   ```
 
-- Registro y gestión de productos.
-- Carrito de compras funcional.
-- Gestión de pagos.
-- Panel de administración para superusuarios.
-- Sistema modular con varias apps de Django.
+2. **Definir Variables de Entorno**
+   Crear un archivo `.env` en la raíz (junto a `docker-compose.yml`) con las credenciales necesarias:
+   ```env
+   # .env
+   SECRET_KEY=clave_ultra_secreta_django
+   DEBUG=True
+   DATABASE_URL=postgres://user:password@db:5432/ecommerce
+   CLOUDINARY_CLOUD_NAME=tu_cloud_name
+   CLOUDINARY_API_KEY=tu_api_key
+   CLOUDINARY_API_SECRET=tu_api_secret
+   ```
 
-## 🎬 Demo
+3. **Orquestar Contenedores**
+   ```bash
+   docker-compose up --build
+   ```
 
-Puedes ver una demo del proyecto en funcionamiento en el siguiente enlace:
+4. **Migraciones y Poblar Base de Datos**
+   En una nueva terminal (mientras los contenedores corren):
+   ```bash
+   # Generar el esquema de BD
+   docker-compose exec web python manage.py migrate
+   # Crear un administrador
+   docker-compose exec web python manage.py createsuperuser
+   # Instalar dependencias estáticas
+   docker-compose exec web python manage.py collectstatic --noinput
+   ```
 
-[Demo del Ecommerce](https://ecommerce-g2jg.onrender.com/)  
+---
+
+## ⚙️ Uso del Panel Administrativo
+
+Ingresando por `http://localhost:8000/admin` usando tu cuenta de superusuario creada en el paso anterior, tendrás un CRM y PIM out-of-the-box para:
+- Abm (*Alta, Baja, Modificación*) de inventario, incluyendo marcar productos como `is_sale`.
+- Visualizar todos los `Customer` y `ShippingAddress` sincronizados.
+- Administrar el historial de órdenes (`Order`) garantizando la trazabilidad.
+
+---
+
+## 🎬 Demo del Proyecto
+
+Explora la plataforma corriendo en tiempo real a través de nuestro despliegue en la nube:
+🔗 **[Live Demo: Modern Ecommerce Hub](https://ecommerce-g2jg.onrender.com/)**
+
+---
+
+## 📄 Licencia
+
+Este proyecto está bajo la licencia [MIT](LICENSE), permitiendo código abierto y comercialización, fomentando a su libre estudio y modificación.
+
+---
+
+*Desarrollado y arquitectado por [JoacoM2003](https://github.com/JoacoM2003)*
